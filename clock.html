@@ -1,988 +1,767 @@
 <html>
+  <body>
+    <div class="time" id="time" data-hours="" data-minutes="">
+      <div class="digit">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+      </div>
+      <div class="digit">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+      </div>
+      <div class="digit">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+      </div>
+      <div class="digit">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+      </div>
+      <div class="digit">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+      </div>
+      <div class="digit">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+      </div>
+    </div>
+  </body>
+  
+  <script>
+    const timeElm = document.getElementById('time');
+    const doc = document.documentElement;
+    const { clientWidth, clientHeight } = doc;
 
-<body>
-<div>
-  <ul class="hourTens"><li>0</li><li>1</li><li>2</li></ul>
-  <ul class="hourOnes"><li>0</li><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li>7</li><li>8</li><li>9</li></ul>
+    const pad = (val) => val < 10 ? `0${val}` : val;
 
-  <ul class="minuteTens"><li>0</li><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li></ul>
-  <ul class="minuteOnes"><li>0</li><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li>7</li><li>8</li><li>9</li></ul>
+    const animationFrame$ = Rx.Observable.interval(0, Rx.Scheduler.animationFrame);
 
-  <ul class="secondTens"><li>0</li><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li></ul>
-  <ul class="secondOnes"><li>0</li><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li>7</li><li>8</li><li>9</li></ul>
-</div>
-</body>
+    const time$ = Rx.Observable
+      .interval(1000)
+      .map(() => {
+        const time = new Date();
 
-<style>
-@keyframes ten1 {
-  10 {
-    top: 44px;
-    transform: rotateX(36deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  20 {
-    top: 71px;
-    transform: rotateX(72deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  30 {
-    top: 71px;
-    transform: rotateX(108deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  40 {
-    top: 44px;
-    transform: rotateX(144deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  50 {
-    top: 0px;
-    transform: rotateX(180deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  60 {
-    top: -44px;
-    transform: rotateX(144deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  70 {
-    top: -71px;
-    transform: rotateX(108deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  80 {
-    top: -71px;
-    transform: rotateX(72deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  90 {
-    top: -44px;
-    transform: rotateX(36deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  0%, 100% {
-    top: 0px;
-    transform: rotateX(0deg);
-    color: #FFF;
-  }
-}
-@keyframes ten2 {
-  10 {
-    top: 0px;
-    transform: rotateX(0deg);
-    color: #FFF;
-  }
-  20 {
-    top: 44px;
-    transform: rotateX(36deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  30 {
-    top: 71px;
-    transform: rotateX(72deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  40 {
-    top: 71px;
-    transform: rotateX(108deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  50 {
-    top: 44px;
-    transform: rotateX(144deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  60 {
-    top: 0px;
-    transform: rotateX(180deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  70 {
-    top: -44px;
-    transform: rotateX(144deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  80 {
-    top: -71px;
-    transform: rotateX(108deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  90 {
-    top: -71px;
-    transform: rotateX(72deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  0%, 100% {
-    top: -44px;
-    transform: rotateX(36deg);
-  }
-}
-@keyframes ten3 {
-  10 {
-    top: -44px;
-    transform: rotateX(36deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  20 {
-    top: 0px;
-    transform: rotateX(0deg);
-    color: #FFF;
-  }
-  30 {
-    top: 44px;
-    transform: rotateX(36deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  40 {
-    top: 71px;
-    transform: rotateX(72deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  50 {
-    top: 71px;
-    transform: rotateX(108deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  60 {
-    top: 44px;
-    transform: rotateX(144deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  70 {
-    top: 0px;
-    transform: rotateX(180deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  80 {
-    top: -44px;
-    transform: rotateX(144deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  90 {
-    top: -71px;
-    transform: rotateX(108deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  0%, 100% {
-    top: -71px;
-    transform: rotateX(72deg);
-  }
-}
-@keyframes ten4 {
-  10 {
-    top: -71px;
-    transform: rotateX(72deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  20 {
-    top: -44px;
-    transform: rotateX(36deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  30 {
-    top: 0px;
-    transform: rotateX(0deg);
-    color: #FFF;
-  }
-  40 {
-    top: 44px;
-    transform: rotateX(36deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  50 {
-    top: 71px;
-    transform: rotateX(72deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  60 {
-    top: 71px;
-    transform: rotateX(108deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  70 {
-    top: 44px;
-    transform: rotateX(144deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  80 {
-    top: 0px;
-    transform: rotateX(180deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  90 {
-    top: -44px;
-    transform: rotateX(144deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  0%, 100% {
-    top: -71px;
-    transform: rotateX(108deg);
-  }
-}
-@keyframes ten5 {
-  10 {
-    top: -71px;
-    transform: rotateX(108deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  20 {
-    top: -71px;
-    transform: rotateX(72deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  30 {
-    top: -44px;
-    transform: rotateX(36deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  40 {
-    top: 0px;
-    transform: rotateX(0deg);
-    color: #FFF;
-  }
-  50 {
-    top: 44px;
-    transform: rotateX(36deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  60 {
-    top: 71px;
-    transform: rotateX(72deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  70 {
-    top: 71px;
-    transform: rotateX(108deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  80 {
-    top: 44px;
-    transform: rotateX(144deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  90 {
-    top: 0px;
-    transform: rotateX(180deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  0%, 100% {
-    top: -44px;
-    transform: rotateX(144deg);
-  }
-}
-@keyframes ten6 {
-  10 {
-    top: -44px;
-    transform: rotateX(144deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  20 {
-    top: -71px;
-    transform: rotateX(108deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  30 {
-    top: -71px;
-    transform: rotateX(72deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  40 {
-    top: -44px;
-    transform: rotateX(36deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  50 {
-    top: 0px;
-    transform: rotateX(0deg);
-    color: #FFF;
-  }
-  60 {
-    top: 44px;
-    transform: rotateX(36deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  70 {
-    top: 71px;
-    transform: rotateX(72deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  80 {
-    top: 71px;
-    transform: rotateX(108deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  90 {
-    top: 44px;
-    transform: rotateX(144deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  0%, 100% {
-    top: 0px;
-    transform: rotateX(180deg);
-  }
-}
-@keyframes ten7 {
-  10 {
-    top: 0px;
-    transform: rotateX(180deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  20 {
-    top: -44px;
-    transform: rotateX(144deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  30 {
-    top: -71px;
-    transform: rotateX(108deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  40 {
-    top: -71px;
-    transform: rotateX(72deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  50 {
-    top: -44px;
-    transform: rotateX(36deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  60 {
-    top: 0px;
-    transform: rotateX(0deg);
-    color: #FFF;
-  }
-  70 {
-    top: 44px;
-    transform: rotateX(36deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  80 {
-    top: 71px;
-    transform: rotateX(72deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  90 {
-    top: 71px;
-    transform: rotateX(108deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  0%, 100% {
-    top: 44px;
-    transform: rotateX(144deg);
-  }
-}
-@keyframes ten8 {
-  10 {
-    top: 44px;
-    transform: rotateX(144deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  20 {
-    top: 0px;
-    transform: rotateX(180deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  30 {
-    top: -44px;
-    transform: rotateX(144deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  40 {
-    top: -71px;
-    transform: rotateX(108deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  50 {
-    top: -71px;
-    transform: rotateX(72deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  60 {
-    top: -44px;
-    transform: rotateX(36deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  70 {
-    top: 0px;
-    transform: rotateX(0deg);
-    color: #FFF;
-  }
-  80 {
-    top: 44px;
-    transform: rotateX(36deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  90 {
-    top: 71px;
-    transform: rotateX(72deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  0%, 100% {
-    top: 71px;
-    transform: rotateX(108deg);
-  }
-}
-@keyframes ten9 {
-  10 {
-    top: 71px;
-    transform: rotateX(108deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  20 {
-    top: 44px;
-    transform: rotateX(144deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  30 {
-    top: 0px;
-    transform: rotateX(180deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  40 {
-    top: -44px;
-    transform: rotateX(144deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  50 {
-    top: -71px;
-    transform: rotateX(108deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  60 {
-    top: -71px;
-    transform: rotateX(72deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  70 {
-    top: -44px;
-    transform: rotateX(36deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  80 {
-    top: 0px;
-    transform: rotateX(0deg);
-    color: #FFF;
-  }
-  90 {
-    top: 44px;
-    transform: rotateX(36deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  0%, 100% {
-    top: 71px;
-    transform: rotateX(72deg);
-  }
-}
-@keyframes ten10 {
-  10 {
-    top: 71px;
-    transform: rotateX(72deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  20 {
-    top: 71px;
-    transform: rotateX(108deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  30 {
-    top: 44px;
-    transform: rotateX(144deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  40 {
-    top: 0px;
-    transform: rotateX(180deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  50 {
-    top: -44px;
-    transform: rotateX(144deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  60 {
-    top: -71px;
-    transform: rotateX(108deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  70 {
-    top: -71px;
-    transform: rotateX(72deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  80 {
-    top: -44px;
-    transform: rotateX(36deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  90 {
-    top: 0px;
-    transform: rotateX(0deg);
-    color: #FFF;
-  }
-  0%, 100% {
-    top: 44px;
-    transform: rotateX(36deg);
-  }
-}
-@keyframes six1 {
-  16.6666666667 {
-    top: 65px;
-    transform: rotateX(60deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  33.3333333333 {
-    top: 65px;
-    transform: rotateX(120deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  50 {
-    top: 0px;
-    transform: rotateX(180deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  66.6666666667 {
-    top: -65px;
-    transform: rotateX(120deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  83.3333333333 {
-    top: -65px;
-    transform: rotateX(60deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  0%, 100% {
-    top: 0px;
-    transform: rotateX(0deg);
-    color: #FFF;
-  }
-}
-@keyframes six2 {
-  16.6666666667 {
-    top: 0px;
-    transform: rotateX(0deg);
-    color: #FFF;
-  }
-  33.3333333333 {
-    top: 65px;
-    transform: rotateX(60deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  50 {
-    top: 65px;
-    transform: rotateX(120deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  66.6666666667 {
-    top: 0px;
-    transform: rotateX(180deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  83.3333333333 {
-    top: -65px;
-    transform: rotateX(120deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  0%, 100% {
-    top: -65px;
-    transform: rotateX(60deg);
-  }
-}
-@keyframes six3 {
-  16.6666666667 {
-    top: -65px;
-    transform: rotateX(60deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  33.3333333333 {
-    top: 0px;
-    transform: rotateX(0deg);
-    color: #FFF;
-  }
-  50 {
-    top: 65px;
-    transform: rotateX(60deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  66.6666666667 {
-    top: 65px;
-    transform: rotateX(120deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  83.3333333333 {
-    top: 0px;
-    transform: rotateX(180deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  0%, 100% {
-    top: -65px;
-    transform: rotateX(120deg);
-  }
-}
-@keyframes six4 {
-  16.6666666667 {
-    top: -65px;
-    transform: rotateX(120deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  33.3333333333 {
-    top: -65px;
-    transform: rotateX(60deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  50 {
-    top: 0px;
-    transform: rotateX(0deg);
-    color: #FFF;
-  }
-  66.6666666667 {
-    top: 65px;
-    transform: rotateX(60deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  83.3333333333 {
-    top: 65px;
-    transform: rotateX(120deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  0%, 100% {
-    top: 0px;
-    transform: rotateX(180deg);
-  }
-}
-@keyframes six5 {
-  16.6666666667 {
-    top: 0px;
-    transform: rotateX(180deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  33.3333333333 {
-    top: -65px;
-    transform: rotateX(120deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  50 {
-    top: -65px;
-    transform: rotateX(60deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  66.6666666667 {
-    top: 0px;
-    transform: rotateX(0deg);
-    color: #FFF;
-  }
-  83.3333333333 {
-    top: 65px;
-    transform: rotateX(60deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  0%, 100% {
-    top: 65px;
-    transform: rotateX(120deg);
-  }
-}
-@keyframes six6 {
-  16.6666666667 {
-    top: 65px;
-    transform: rotateX(120deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  33.3333333333 {
-    top: 0px;
-    transform: rotateX(180deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  50 {
-    top: -65px;
-    transform: rotateX(120deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  66.6666666667 {
-    top: -65px;
-    transform: rotateX(60deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  83.3333333333 {
-    top: 0px;
-    transform: rotateX(0deg);
-    color: #FFF;
-  }
-  0%, 100% {
-    top: 65px;
-    transform: rotateX(60deg);
-  }
-}
-@keyframes three1 {
-  33.3333333333 {
-    top: 65px;
-    transform: rotateX(120deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  66.6666666667 {
-    top: -65px;
-    transform: rotateX(120deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  0%, 100% {
-    top: 0px;
-    transform: rotateX(0deg);
-    color: #FFF;
-  }
-}
-@keyframes three2 {
-  33.3333333333 {
-    top: 0px;
-    transform: rotateX(0deg);
-    color: #FFF;
-  }
-  66.6666666667 {
-    top: 65px;
-    transform: rotateX(120deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  0%, 100% {
-    top: -65px;
-    transform: rotateX(120deg);
-  }
-}
-@keyframes three3 {
-  33.3333333333 {
-    top: -65px;
-    transform: rotateX(120deg);
-    color: rgba(255, 255, 255, 0.2);
-  }
-  66.6666666667 {
-    top: 0px;
-    transform: rotateX(0deg);
-    color: #FFF;
-  }
-  0%, 100% {
-    top: 65px;
-    transform: rotateX(120deg);
-  }
-}
-.hourTens li:nth-child(2) {
-  animation: three1 108000s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -8085s;
-}
-.hourTens li:nth-child(3) {
-  animation: three2 108000s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -8085s;
-}
-.hourTens li:nth-child(1) {
-  animation: three3 108000s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -8085s;
-}
-.hourOnes li:nth-child(3) {
-  animation: ten1 36000s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -885s;
-}
-.hourOnes li:nth-child(4) {
-  animation: ten2 36000s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -885s;
-}
-.hourOnes li:nth-child(5) {
-  animation: ten3 36000s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -885s;
-}
-.hourOnes li:nth-child(6) {
-  animation: ten4 36000s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -885s;
-}
-.hourOnes li:nth-child(7) {
-  animation: ten5 36000s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -885s;
-}
-.hourOnes li:nth-child(8) {
-  animation: ten6 36000s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -885s;
-}
-.hourOnes li:nth-child(9) {
-  animation: ten7 36000s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -885s;
-}
-.hourOnes li:nth-child(10) {
-  animation: ten8 36000s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -885s;
-}
-.hourOnes li:nth-child(1) {
-  animation: ten9 36000s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -885s;
-}
-.hourOnes li:nth-child(2) {
-  animation: ten10 36000s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -885s;
-}
-.minuteTens li:nth-child(2) {
-  animation: six1 3600s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -285s;
-}
-.minuteTens li:nth-child(3) {
-  animation: six2 3600s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -285s;
-}
-.minuteTens li:nth-child(4) {
-  animation: six3 3600s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -285s;
-}
-.minuteTens li:nth-child(5) {
-  animation: six4 3600s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -285s;
-}
-.minuteTens li:nth-child(6) {
-  animation: six5 3600s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -285s;
-}
-.minuteTens li:nth-child(1) {
-  animation: six6 3600s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -285s;
-}
-.minuteOnes li:nth-child(5) {
-  animation: ten1 600s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -45s;
-}
-.minuteOnes li:nth-child(6) {
-  animation: ten2 600s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -45s;
-}
-.minuteOnes li:nth-child(7) {
-  animation: ten3 600s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -45s;
-}
-.minuteOnes li:nth-child(8) {
-  animation: ten4 600s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -45s;
-}
-.minuteOnes li:nth-child(9) {
-  animation: ten5 600s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -45s;
-}
-.minuteOnes li:nth-child(10) {
-  animation: ten6 600s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -45s;
-}
-.minuteOnes li:nth-child(1) {
-  animation: ten7 600s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -45s;
-}
-.minuteOnes li:nth-child(2) {
-  animation: ten8 600s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -45s;
-}
-.minuteOnes li:nth-child(3) {
-  animation: ten9 600s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -45s;
-}
-.minuteOnes li:nth-child(4) {
-  animation: ten10 600s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -45s;
-}
-.secondTens li:nth-child(5) {
-  animation: six1 60s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -5s;
-}
-.secondTens li:nth-child(6) {
-  animation: six2 60s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -5s;
-}
-.secondTens li:nth-child(1) {
-  animation: six3 60s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -5s;
-}
-.secondTens li:nth-child(2) {
-  animation: six4 60s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -5s;
-}
-.secondTens li:nth-child(3) {
-  animation: six5 60s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -5s;
-}
-.secondTens li:nth-child(4) {
-  animation: six6 60s cubic-bezier(1, 0, 1, 0) infinite;
-  animation-delay: -5s;
-}
-.secondOnes li:nth-child(6) {
-  animation: ten1 10s cubic-bezier(0.9, 0, 0.9, 0) infinite;
-}
-.secondOnes li:nth-child(7) {
-  animation: ten2 10s cubic-bezier(0.9, 0, 0.9, 0) infinite;
-}
-.secondOnes li:nth-child(8) {
-  animation: ten3 10s cubic-bezier(0.9, 0, 0.9, 0) infinite;
-}
-.secondOnes li:nth-child(9) {
-  animation: ten4 10s cubic-bezier(0.9, 0, 0.9, 0) infinite;
-}
-.secondOnes li:nth-child(10) {
-  animation: ten5 10s cubic-bezier(0.9, 0, 0.9, 0) infinite;
-}
-.secondOnes li:nth-child(1) {
-  animation: ten6 10s cubic-bezier(0.9, 0, 0.9, 0) infinite;
-}
-.secondOnes li:nth-child(2) {
-  animation: ten7 10s cubic-bezier(0.9, 0, 0.9, 0) infinite;
-}
-.secondOnes li:nth-child(3) {
-  animation: ten8 10s cubic-bezier(0.9, 0, 0.9, 0) infinite;
-}
-.secondOnes li:nth-child(4) {
-  animation: ten9 10s cubic-bezier(0.9, 0, 0.9, 0) infinite;
-}
-.secondOnes li:nth-child(5) {
-  animation: ten10 10s cubic-bezier(0.9, 0, 0.9, 0) infinite;
-}
-html {
-  height: 100%;
-}
-body {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  background: #DB6713;
-  background: linear-gradient(45deg, #dba013, #df2445);
-  font-family: 'Lato', sans-serif;
-}
-div {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-ul {
-  position: relative;
-  width: 30px;
-  height: 35px;
-  margin: 0;
-  padding: 0;
-  float: left;
-  list-style-type: none;
-  font-size: 35px;
-  font-weight: bold;
-}
-ul:nth-of-type(even) {
-  margin-right: 15px;
-  padding-right: 15px;
-}
-ul:nth-of-type(even)::after {
-  content: ":";
-  position: absolute;
-  right: 0;
-  color: #FFF;
-  line-height: 1;
-}
-ul:last-of-type::after {
-  display: none;
-}
-ul li {
-  position: absolute;
-  backface-visibility: hidden;
-  color: rgba(255, 255, 255, 0.2);
-  font-size: 35px;
-  line-height: 1;
-}
+        return {      
+          hours: time.getHours(),
+          minutes: time.getMinutes(),
+          seconds: time.getSeconds(),
+        };
+      })
+      .subscribe(({ hours, minutes, seconds}) => {
+        timeElm.setAttribute('data-hours', pad(hours));
+        timeElm.setAttribute('data-minutes', pad(minutes));
+        timeElm.setAttribute('data-seconds', pad(seconds));
+      });
 
-</style>
+    const mouse$ = Rx.Observable
+      .fromEvent(document, 'mousemove')
+      .map(({clientX, clientY}) => ({
+        x: (clientWidth / 2 - clientX) / clientWidth,
+        y: (clientHeight / 2 - clientY) / clientHeight,
+      }));
+
+    const smoothMouse$ = animationFrame$
+      .withLatestFrom(mouse$, (_, m) => m)
+      .scan(RxCSS.lerp(0.1));
+
+    RxCSS({
+      mouse: smoothMouse$
+    }, timeElm);
+  </script>
+  
+  <style>
+    :root {
+      --mouse-x: 0;
+      --mouse-y: 0;
+    }
+    .time {
+      display: flex;
+      flex-direction: row;
+      transform: translateZ(20px);
+      transform: translateZ(20px) rotateX(calc(var(--mouse-y) * 45deg)) rotateY(calc(var(--mouse-x) * 45deg));
+    }
+    * {
+      transform-style: preserve-3d;
+      perspective: 1000px;
+    }
+    .digit {
+      height: 20vmin;
+      width: 10vmin;
+      transform-style: preserve-3d;
+      perspective: 1000px;
+      margin: 0 1rem;
+    }
+    .digit, .digit:after, .digit:before {
+      transition: transform 1s cubic-bezier(0.5, 0, 0.5, 1);
+    }
+    .digit:hover {
+      transform: translateZ(2vmax);
+    }
+    .digit:hover:after, .digit:hover:before {
+      transform: translateZ(-2vmax);
+    }
+    .digit:nth-child(2), .digit:nth-child(4) {
+      margin-right: 3vmax;
+    }
+    .digit:nth-child(2):before, .digit:nth-child(4):before, .digit:nth-child(2):after, .digit:nth-child(4):after {
+      content: '';
+      background: white;
+      display: block;
+      position: absolute;
+      text-align: center;
+      width: 1vmax;
+      height: 1vmax;
+      left: calc(100% + 2vmax);
+      box-shadow: 0 0 1rem #0BFDFD, inset 0 0 0.25vmax #0BFDFD;
+      font-size: 8vmax;
+      text-shadow: 0 0 1rem #0BFDFD;
+      animation: pulse 1s alternate cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    }
+    .digit:nth-child(2):before, .digit:nth-child(4):before {
+      top: 30%;
+    }
+    .digit:nth-child(2):after, .digit:nth-child(4):after {
+      bottom: 30%;
+    }
+    @keyframes pulse {
+      to {
+        opacity: 0.5;
+      }
+    }
+    [data-hours^="0"] .digit:nth-child(1) :nth-child(4):before, [data-hours^="0"] .digit:nth-child(1) :nth-child(4):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours$="0"] .digit:nth-child(2) :nth-child(4):before, [data-hours$="0"] .digit:nth-child(2) :nth-child(4):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes^="0"] .digit:nth-child(3) :nth-child(4):before, [data-minutes^="0"] .digit:nth-child(3) :nth-child(4):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes$="0"] .digit:nth-child(4) :nth-child(4):before, [data-minutes$="0"] .digit:nth-child(4) :nth-child(4):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds^="0"] .digit:nth-child(5) :nth-child(4):before, [data-seconds^="0"] .digit:nth-child(5) :nth-child(4):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds$="0"] .digit:nth-child(6) :nth-child(4):before, [data-seconds$="0"] .digit:nth-child(6) :nth-child(4):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours^="1"] .digit:nth-child(1) :nth-child(1):before, [data-hours^="1"] .digit:nth-child(1) :nth-child(1):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours^="1"] .digit:nth-child(1) :nth-child(2):before, [data-hours^="1"] .digit:nth-child(1) :nth-child(2):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours^="1"] .digit:nth-child(1) :nth-child(4):before, [data-hours^="1"] .digit:nth-child(1) :nth-child(4):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours^="1"] .digit:nth-child(1) :nth-child(5):before, [data-hours^="1"] .digit:nth-child(1) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours^="1"] .digit:nth-child(1) :nth-child(6):before, [data-hours^="1"] .digit:nth-child(1) :nth-child(6):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours$="1"] .digit:nth-child(2) :nth-child(1):before, [data-hours$="1"] .digit:nth-child(2) :nth-child(1):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours$="1"] .digit:nth-child(2) :nth-child(2):before, [data-hours$="1"] .digit:nth-child(2) :nth-child(2):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours$="1"] .digit:nth-child(2) :nth-child(4):before, [data-hours$="1"] .digit:nth-child(2) :nth-child(4):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours$="1"] .digit:nth-child(2) :nth-child(5):before, [data-hours$="1"] .digit:nth-child(2) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours$="1"] .digit:nth-child(2) :nth-child(6):before, [data-hours$="1"] .digit:nth-child(2) :nth-child(6):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes^="1"] .digit:nth-child(3) :nth-child(1):before, [data-minutes^="1"] .digit:nth-child(3) :nth-child(1):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes^="1"] .digit:nth-child(3) :nth-child(2):before, [data-minutes^="1"] .digit:nth-child(3) :nth-child(2):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes^="1"] .digit:nth-child(3) :nth-child(4):before, [data-minutes^="1"] .digit:nth-child(3) :nth-child(4):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes^="1"] .digit:nth-child(3) :nth-child(5):before, [data-minutes^="1"] .digit:nth-child(3) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes^="1"] .digit:nth-child(3) :nth-child(6):before, [data-minutes^="1"] .digit:nth-child(3) :nth-child(6):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes$="1"] .digit:nth-child(4) :nth-child(1):before, [data-minutes$="1"] .digit:nth-child(4) :nth-child(1):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes$="1"] .digit:nth-child(4) :nth-child(2):before, [data-minutes$="1"] .digit:nth-child(4) :nth-child(2):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes$="1"] .digit:nth-child(4) :nth-child(4):before, [data-minutes$="1"] .digit:nth-child(4) :nth-child(4):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes$="1"] .digit:nth-child(4) :nth-child(5):before, [data-minutes$="1"] .digit:nth-child(4) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes$="1"] .digit:nth-child(4) :nth-child(6):before, [data-minutes$="1"] .digit:nth-child(4) :nth-child(6):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds^="1"] .digit:nth-child(5) :nth-child(1):before, [data-seconds^="1"] .digit:nth-child(5) :nth-child(1):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds^="1"] .digit:nth-child(5) :nth-child(2):before, [data-seconds^="1"] .digit:nth-child(5) :nth-child(2):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds^="1"] .digit:nth-child(5) :nth-child(4):before, [data-seconds^="1"] .digit:nth-child(5) :nth-child(4):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds^="1"] .digit:nth-child(5) :nth-child(5):before, [data-seconds^="1"] .digit:nth-child(5) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds^="1"] .digit:nth-child(5) :nth-child(6):before, [data-seconds^="1"] .digit:nth-child(5) :nth-child(6):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds$="1"] .digit:nth-child(6) :nth-child(1):before, [data-seconds$="1"] .digit:nth-child(6) :nth-child(1):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds$="1"] .digit:nth-child(6) :nth-child(2):before, [data-seconds$="1"] .digit:nth-child(6) :nth-child(2):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds$="1"] .digit:nth-child(6) :nth-child(4):before, [data-seconds$="1"] .digit:nth-child(6) :nth-child(4):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds$="1"] .digit:nth-child(6) :nth-child(5):before, [data-seconds$="1"] .digit:nth-child(6) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds$="1"] .digit:nth-child(6) :nth-child(6):before, [data-seconds$="1"] .digit:nth-child(6) :nth-child(6):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours^="2"] .digit:nth-child(1) :nth-child(1):before, [data-hours^="2"] .digit:nth-child(1) :nth-child(1):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours^="2"] .digit:nth-child(1) :nth-child(7):before, [data-hours^="2"] .digit:nth-child(1) :nth-child(7):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours$="2"] .digit:nth-child(2) :nth-child(1):before, [data-hours$="2"] .digit:nth-child(2) :nth-child(1):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours$="2"] .digit:nth-child(2) :nth-child(7):before, [data-hours$="2"] .digit:nth-child(2) :nth-child(7):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes^="2"] .digit:nth-child(3) :nth-child(1):before, [data-minutes^="2"] .digit:nth-child(3) :nth-child(1):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes^="2"] .digit:nth-child(3) :nth-child(7):before, [data-minutes^="2"] .digit:nth-child(3) :nth-child(7):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes$="2"] .digit:nth-child(4) :nth-child(1):before, [data-minutes$="2"] .digit:nth-child(4) :nth-child(1):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes$="2"] .digit:nth-child(4) :nth-child(7):before, [data-minutes$="2"] .digit:nth-child(4) :nth-child(7):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds^="2"] .digit:nth-child(5) :nth-child(1):before, [data-seconds^="2"] .digit:nth-child(5) :nth-child(1):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds^="2"] .digit:nth-child(5) :nth-child(7):before, [data-seconds^="2"] .digit:nth-child(5) :nth-child(7):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds$="2"] .digit:nth-child(6) :nth-child(1):before, [data-seconds$="2"] .digit:nth-child(6) :nth-child(1):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds$="2"] .digit:nth-child(6) :nth-child(7):before, [data-seconds$="2"] .digit:nth-child(6) :nth-child(7):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours^="3"] .digit:nth-child(1) :nth-child(1):before, [data-hours^="3"] .digit:nth-child(1) :nth-child(1):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours^="3"] .digit:nth-child(1) :nth-child(5):before, [data-hours^="3"] .digit:nth-child(1) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours$="3"] .digit:nth-child(2) :nth-child(1):before, [data-hours$="3"] .digit:nth-child(2) :nth-child(1):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours$="3"] .digit:nth-child(2) :nth-child(5):before, [data-hours$="3"] .digit:nth-child(2) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes^="3"] .digit:nth-child(3) :nth-child(1):before, [data-minutes^="3"] .digit:nth-child(3) :nth-child(1):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes^="3"] .digit:nth-child(3) :nth-child(5):before, [data-minutes^="3"] .digit:nth-child(3) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes$="3"] .digit:nth-child(4) :nth-child(1):before, [data-minutes$="3"] .digit:nth-child(4) :nth-child(1):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes$="3"] .digit:nth-child(4) :nth-child(5):before, [data-minutes$="3"] .digit:nth-child(4) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds^="3"] .digit:nth-child(5) :nth-child(1):before, [data-seconds^="3"] .digit:nth-child(5) :nth-child(1):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds^="3"] .digit:nth-child(5) :nth-child(5):before, [data-seconds^="3"] .digit:nth-child(5) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds$="3"] .digit:nth-child(6) :nth-child(1):before, [data-seconds$="3"] .digit:nth-child(6) :nth-child(1):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds$="3"] .digit:nth-child(6) :nth-child(5):before, [data-seconds$="3"] .digit:nth-child(6) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours^="4"] .digit:nth-child(1) :nth-child(2):before, [data-hours^="4"] .digit:nth-child(1) :nth-child(2):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours^="4"] .digit:nth-child(1) :nth-child(5):before, [data-hours^="4"] .digit:nth-child(1) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours^="4"] .digit:nth-child(1) :nth-child(6):before, [data-hours^="4"] .digit:nth-child(1) :nth-child(6):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours$="4"] .digit:nth-child(2) :nth-child(2):before, [data-hours$="4"] .digit:nth-child(2) :nth-child(2):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours$="4"] .digit:nth-child(2) :nth-child(5):before, [data-hours$="4"] .digit:nth-child(2) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours$="4"] .digit:nth-child(2) :nth-child(6):before, [data-hours$="4"] .digit:nth-child(2) :nth-child(6):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes^="4"] .digit:nth-child(3) :nth-child(2):before, [data-minutes^="4"] .digit:nth-child(3) :nth-child(2):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes^="4"] .digit:nth-child(3) :nth-child(5):before, [data-minutes^="4"] .digit:nth-child(3) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes^="4"] .digit:nth-child(3) :nth-child(6):before, [data-minutes^="4"] .digit:nth-child(3) :nth-child(6):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes$="4"] .digit:nth-child(4) :nth-child(2):before, [data-minutes$="4"] .digit:nth-child(4) :nth-child(2):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes$="4"] .digit:nth-child(4) :nth-child(5):before, [data-minutes$="4"] .digit:nth-child(4) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes$="4"] .digit:nth-child(4) :nth-child(6):before, [data-minutes$="4"] .digit:nth-child(4) :nth-child(6):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds^="4"] .digit:nth-child(5) :nth-child(2):before, [data-seconds^="4"] .digit:nth-child(5) :nth-child(2):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds^="4"] .digit:nth-child(5) :nth-child(5):before, [data-seconds^="4"] .digit:nth-child(5) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds^="4"] .digit:nth-child(5) :nth-child(6):before, [data-seconds^="4"] .digit:nth-child(5) :nth-child(6):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds$="4"] .digit:nth-child(6) :nth-child(2):before, [data-seconds$="4"] .digit:nth-child(6) :nth-child(2):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds$="4"] .digit:nth-child(6) :nth-child(5):before, [data-seconds$="4"] .digit:nth-child(6) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds$="4"] .digit:nth-child(6) :nth-child(6):before, [data-seconds$="4"] .digit:nth-child(6) :nth-child(6):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours^="5"] .digit:nth-child(1) :nth-child(3):before, [data-hours^="5"] .digit:nth-child(1) :nth-child(3):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours^="5"] .digit:nth-child(1) :nth-child(5):before, [data-hours^="5"] .digit:nth-child(1) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours$="5"] .digit:nth-child(2) :nth-child(3):before, [data-hours$="5"] .digit:nth-child(2) :nth-child(3):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours$="5"] .digit:nth-child(2) :nth-child(5):before, [data-hours$="5"] .digit:nth-child(2) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes^="5"] .digit:nth-child(3) :nth-child(3):before, [data-minutes^="5"] .digit:nth-child(3) :nth-child(3):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes^="5"] .digit:nth-child(3) :nth-child(5):before, [data-minutes^="5"] .digit:nth-child(3) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes$="5"] .digit:nth-child(4) :nth-child(3):before, [data-minutes$="5"] .digit:nth-child(4) :nth-child(3):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes$="5"] .digit:nth-child(4) :nth-child(5):before, [data-minutes$="5"] .digit:nth-child(4) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds^="5"] .digit:nth-child(5) :nth-child(3):before, [data-seconds^="5"] .digit:nth-child(5) :nth-child(3):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds^="5"] .digit:nth-child(5) :nth-child(5):before, [data-seconds^="5"] .digit:nth-child(5) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds$="5"] .digit:nth-child(6) :nth-child(3):before, [data-seconds$="5"] .digit:nth-child(6) :nth-child(3):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds$="5"] .digit:nth-child(6) :nth-child(5):before, [data-seconds$="5"] .digit:nth-child(6) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours^="6"] .digit:nth-child(1) :nth-child(3):before, [data-hours^="6"] .digit:nth-child(1) :nth-child(3):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours$="6"] .digit:nth-child(2) :nth-child(3):before, [data-hours$="6"] .digit:nth-child(2) :nth-child(3):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes^="6"] .digit:nth-child(3) :nth-child(3):before, [data-minutes^="6"] .digit:nth-child(3) :nth-child(3):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes$="6"] .digit:nth-child(4) :nth-child(3):before, [data-minutes$="6"] .digit:nth-child(4) :nth-child(3):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds^="6"] .digit:nth-child(5) :nth-child(3):before, [data-seconds^="6"] .digit:nth-child(5) :nth-child(3):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds$="6"] .digit:nth-child(6) :nth-child(3):before, [data-seconds$="6"] .digit:nth-child(6) :nth-child(3):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours^="7"] .digit:nth-child(1) :nth-child(1):before, [data-hours^="7"] .digit:nth-child(1) :nth-child(1):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours^="7"] .digit:nth-child(1) :nth-child(4):before, [data-hours^="7"] .digit:nth-child(1) :nth-child(4):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours^="7"] .digit:nth-child(1) :nth-child(5):before, [data-hours^="7"] .digit:nth-child(1) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours^="7"] .digit:nth-child(1) :nth-child(6):before, [data-hours^="7"] .digit:nth-child(1) :nth-child(6):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours$="7"] .digit:nth-child(2) :nth-child(1):before, [data-hours$="7"] .digit:nth-child(2) :nth-child(1):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours$="7"] .digit:nth-child(2) :nth-child(4):before, [data-hours$="7"] .digit:nth-child(2) :nth-child(4):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours$="7"] .digit:nth-child(2) :nth-child(5):before, [data-hours$="7"] .digit:nth-child(2) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours$="7"] .digit:nth-child(2) :nth-child(6):before, [data-hours$="7"] .digit:nth-child(2) :nth-child(6):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes^="7"] .digit:nth-child(3) :nth-child(1):before, [data-minutes^="7"] .digit:nth-child(3) :nth-child(1):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes^="7"] .digit:nth-child(3) :nth-child(4):before, [data-minutes^="7"] .digit:nth-child(3) :nth-child(4):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes^="7"] .digit:nth-child(3) :nth-child(5):before, [data-minutes^="7"] .digit:nth-child(3) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes^="7"] .digit:nth-child(3) :nth-child(6):before, [data-minutes^="7"] .digit:nth-child(3) :nth-child(6):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes$="7"] .digit:nth-child(4) :nth-child(1):before, [data-minutes$="7"] .digit:nth-child(4) :nth-child(1):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes$="7"] .digit:nth-child(4) :nth-child(4):before, [data-minutes$="7"] .digit:nth-child(4) :nth-child(4):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes$="7"] .digit:nth-child(4) :nth-child(5):before, [data-minutes$="7"] .digit:nth-child(4) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes$="7"] .digit:nth-child(4) :nth-child(6):before, [data-minutes$="7"] .digit:nth-child(4) :nth-child(6):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds^="7"] .digit:nth-child(5) :nth-child(1):before, [data-seconds^="7"] .digit:nth-child(5) :nth-child(1):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds^="7"] .digit:nth-child(5) :nth-child(4):before, [data-seconds^="7"] .digit:nth-child(5) :nth-child(4):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds^="7"] .digit:nth-child(5) :nth-child(5):before, [data-seconds^="7"] .digit:nth-child(5) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds^="7"] .digit:nth-child(5) :nth-child(6):before, [data-seconds^="7"] .digit:nth-child(5) :nth-child(6):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds$="7"] .digit:nth-child(6) :nth-child(1):before, [data-seconds$="7"] .digit:nth-child(6) :nth-child(1):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds$="7"] .digit:nth-child(6) :nth-child(4):before, [data-seconds$="7"] .digit:nth-child(6) :nth-child(4):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds$="7"] .digit:nth-child(6) :nth-child(5):before, [data-seconds$="7"] .digit:nth-child(6) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds$="7"] .digit:nth-child(6) :nth-child(6):before, [data-seconds$="7"] .digit:nth-child(6) :nth-child(6):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours^="9"] .digit:nth-child(1) :nth-child(5):before, [data-hours^="9"] .digit:nth-child(1) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-hours$="9"] .digit:nth-child(2) :nth-child(5):before, [data-hours$="9"] .digit:nth-child(2) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes^="9"] .digit:nth-child(3) :nth-child(5):before, [data-minutes^="9"] .digit:nth-child(3) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-minutes$="9"] .digit:nth-child(4) :nth-child(5):before, [data-minutes$="9"] .digit:nth-child(4) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds^="9"] .digit:nth-child(5) :nth-child(5):before, [data-seconds^="9"] .digit:nth-child(5) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    [data-seconds$="9"] .digit:nth-child(6) :nth-child(5):before, [data-seconds$="9"] .digit:nth-child(6) :nth-child(5):after {
+      opacity: 0.3;
+      transform: translateZ(-2vmax);
+    }
+    .line {
+      position: absolute;
+      transform-style: preserve-3d;
+      perspective: 1000px;
+    }
+    .line:before, .line:after {
+      content: '';
+      display: block;
+      position: absolute;
+      color: #0BFDFD;
+      background: white;
+      transition: all 0.9s cubic-bezier(0.5, 0, 0.5, 1);
+      border-radius: 1ch;
+      box-shadow: 0 0 1rem #0BFDFD, inset 0 0 0.125vmin #0BFDFD;
+    }
+    .line:after {
+      transition-timing-function: cubic-bezier(0.4, 0, 0.1, 1);
+    }
+    .line:nth-child(2n - 1) {
+      height: 50%;
+      width: 0.5vmin;
+    }
+    .line:nth-child(2n - 1):before, .line:nth-child(2n - 1):after {
+      height: calc(50% - 0.25vmin);
+      width: 100%;
+    }
+    .line:nth-child(2n - 1):before {
+      top: 0.25vmin;
+      transform-origin: center top;
+    }
+    .line:nth-child(2n - 1):after {
+      bottom: 0.25vmin;
+      transform-origin: center bottom;
+    }
+    .line:nth-child(2n) {
+      width: 100%;
+      height: 0.5vmin;
+    }
+    .line:nth-child(2n):before, .line:nth-child(2n):after {
+      height: 100%;
+      width: calc(50% - 0.25vmin);
+    }
+    .line:nth-child(2n):before {
+      left: 0.25vmin;
+      transform-origin: left center;
+    }
+    .line:nth-child(2n):after {
+      right: 0.25vmin;
+      transform-origin: right center;
+    }
+    .line:nth-child(1) {
+      top: 0;
+      left: 0;
+    }
+    .line:nth-child(2) {
+      top: 0;
+      left: 0;
+    }
+    .line:nth-child(3) {
+      top: 0;
+      right: 0;
+    }
+    .line:nth-child(4) {
+      top: 50%;
+      left: 0;
+    }
+    .line:nth-child(5) {
+      top: 50%;
+      left: 0;
+    }
+    .line:nth-child(6) {
+      bottom: 0;
+      left: 0;
+    }
+    .line:nth-child(7) {
+      top: 50%;
+      right: 0;
+    }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #121212;
+      transform-style: preserve-3d;
+      perspective: 1000px;
+    }
+    body, html {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    *, *:before, *:after {
+      box-sizing: border-box;
+      position: relative;
+    }
+    *:before, *:after {
+      content: '';
+      display: block;
+    }
+  </style>
 </html>
